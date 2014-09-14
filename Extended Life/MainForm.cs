@@ -9,11 +9,11 @@ using Vortex.Drawing;
 namespace Extended_Life {
     public partial class MainForm : Form {
         const int PANEL_WIDTH = 600, PANEL_HEIGHT = 450;
-        const int CELL_SIZE = 10; // Must be equal to 5, 10, 15, 30 or 50
+        const int CELL_SIZE = 15; // Must be equal to 5, 10, 15, 30 or 50
         const int FIELD_WIDTH = PANEL_WIDTH / CELL_SIZE, FIELD_HEIGHT = PANEL_HEIGHT / CELL_SIZE;
 
         // Если заменить на true, получится обычная игра "Жизнь"
-        const bool REGULAL_LIFE = false;
+        bool RegularLife = true;
 
         ColorU cell_color, bgColor = new ColorU(Color.FromArgb(250, 250, 250));
         Random rnd = new Random();
@@ -27,6 +27,7 @@ namespace Extended_Life {
             InitializeComponent();
 
             device = new SingleContextDevice(panel1.Handle);
+            device.Context.VerticalSync = false;
             canvas = device.Context.Canvas;
 
             GenerateField(true);
@@ -65,7 +66,7 @@ namespace Extended_Life {
                 for (int c = 0; c < FIELD_HEIGHT; c++) {
                     List<Cell> neighbours = GetNeighbours(_cells, i, c); // Кол-во соседей у клетки
 
-                    if (REGULAL_LIFE) {
+                    if (RegularLife) {
                         if (_cells[i, c].IsAlive == false && neighbours.Count == 3)
                             cells[i, c].IsAlive = true;
                         else if (_cells[i, c].IsAlive && neighbours.Count != 2 && neighbours.Count != 3)
@@ -117,7 +118,7 @@ namespace Extended_Life {
         private void DrawCells() {
             for (int i = 0; i < FIELD_WIDTH; i++)
                 for (int c = 0; c < FIELD_HEIGHT; c++) {
-                    cell_color = REGULAL_LIFE ? ColorU.LimeGreen : GetCellColor(cells[i, c]);
+                    cell_color = RegularLife ? ColorU.LimeGreen : GetCellColor(cells[i, c]);
                     canvas.DrawFilledRect(i * CELL_SIZE + 1, c * CELL_SIZE + 1,
                         CELL_SIZE - 1, CELL_SIZE - 1,
                         cells[i, c].IsAlive ? cell_color : bgColor);
@@ -145,6 +146,8 @@ namespace Extended_Life {
 
         private void button2_Click(object sender, EventArgs e) {
             tickTimer.Enabled = true;
+            button2.Enabled = false;
+            button3.Enabled = true;
         }
 
         // Таймер по тику обновляет поле
@@ -155,6 +158,8 @@ namespace Extended_Life {
 
         private void button3_Click(object sender, EventArgs e) {
             tickTimer.Enabled = false;
+            button2.Enabled = true;
+            button3.Enabled = false;
         }
 
         private void trackBar1_ValueChanged(object sender, EventArgs e) {
@@ -162,6 +167,40 @@ namespace Extended_Life {
 
             // Обновляем подсказку
             toolTip.SetToolTip(trackBar1, "Update speed. Value - " + trackBar1.Value + " ms.");
+        }
+
+        private void ChangeGameMode(bool regularLife) {
+            RegularLife = regularLife;
+            tickTimer.Enabled = false;
+            button2.Enabled = true;
+            button3.Enabled = false;
+            GenerateField(true);
+            UpdateScene();
+        }
+
+        private void radioButton1_CheckedChanged(object sender, EventArgs e) {
+            ChangeGameMode(true);
+        }
+
+        private void radioButton2_CheckedChanged(object sender, EventArgs e) {
+            ChangeGameMode(false);
+        }
+
+        private void panel1_MouseMove(object sender, MouseEventArgs e) {
+            if (RegularLife) {
+                int x = e.X / CELL_SIZE, y = e.Y / CELL_SIZE;
+                if (x >= 0 && y >= 0 && x < FIELD_WIDTH && y < FIELD_HEIGHT)
+                    if (e.Button == System.Windows.Forms.MouseButtons.Left)
+                        cells[x, y].IsAlive = true;
+                    else if (e.Button == System.Windows.Forms.MouseButtons.Right)
+                        cells[x, y].IsAlive = false;
+                UpdateScene();
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e) {
+            GenerateField(true);
+            UpdateScene();
         }
     }
 }
