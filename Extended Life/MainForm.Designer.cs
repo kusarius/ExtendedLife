@@ -60,22 +60,20 @@
             // 
             // button2
             // 
-            this.button2.BackgroundImage = global::Extended_Life.Properties.Resources.start;
             this.button2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.button2.Cursor = System.Windows.Forms.Cursors.Default;
             this.button2.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control;
-            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button2.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.button2.Location = new System.Drawing.Point(625, 79);
+            this.button2.Location = new System.Drawing.Point(620, 79);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(50, 50);
+            this.button2.Size = new System.Drawing.Size(68, 23);
             this.button2.TabIndex = 2;
+            this.button2.Text = "Старт";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // tickTimer
             // 
-            this.tickTimer.Interval = 10;
             this.tickTimer.Tick += new System.EventHandler(this.tickTimer_Tick);
             // 
             // button3
@@ -85,14 +83,14 @@
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(68, 23);
             this.button3.TabIndex = 3;
-            this.button3.Text = "Stop";
+            this.button3.Text = "Стоп";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // trackBar1
             // 
             this.trackBar1.AutoSize = false;
-            this.trackBar1.Location = new System.Drawing.Point(620, 142);
+            this.trackBar1.Location = new System.Drawing.Point(620, 108);
             this.trackBar1.Maximum = 1000;
             this.trackBar1.Minimum = 1;
             this.trackBar1.Name = "trackBar1";
@@ -102,14 +100,14 @@
             this.trackBar1.TickFrequency = 100;
             this.trackBar1.TickStyle = System.Windows.Forms.TickStyle.None;
             this.toolTip.SetToolTip(this.trackBar1, "Update speed");
-            this.trackBar1.Value = 10;
+            this.trackBar1.Value = 100;
             this.trackBar1.ValueChanged += new System.EventHandler(this.trackBar1_ValueChanged);
             // 
             // radioButton1
             // 
             this.radioButton1.AutoSize = true;
             this.radioButton1.Checked = true;
-            this.radioButton1.Location = new System.Drawing.Point(625, 175);
+            this.radioButton1.Location = new System.Drawing.Point(625, 141);
             this.radioButton1.Name = "radioButton1";
             this.radioButton1.Size = new System.Drawing.Size(133, 17);
             this.radioButton1.TabIndex = 5;
@@ -121,7 +119,7 @@
             // radioButton2
             // 
             this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(625, 200);
+            this.radioButton2.Location = new System.Drawing.Point(625, 166);
             this.radioButton2.Name = "radioButton2";
             this.radioButton2.Size = new System.Drawing.Size(133, 17);
             this.radioButton2.TabIndex = 6;

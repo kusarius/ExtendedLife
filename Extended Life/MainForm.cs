@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Forms;
 using Vortex.Drawing;
 
 namespace Extended_Life {
     public partial class MainForm : Form {
+        // ТУДУ: Собрать движок Vortex2D под .NET 4.0
+
         const int PANEL_WIDTH = 600, PANEL_HEIGHT = 450;
-        const int CELL_SIZE = 15; // Must be equal to 5, 10, 15, 30 or 50
+        const int CELL_SIZE = 5; // Должен быть равен 5, 10, 15, 30 или 50
         const int FIELD_WIDTH = PANEL_WIDTH / CELL_SIZE, FIELD_HEIGHT = PANEL_HEIGHT / CELL_SIZE;
 
-        // Если заменить на true, получится обычная игра "Жизнь"
+        // Режим игры
         bool RegularLife = true;
 
         ColorU cell_color, bgColor = new ColorU(Color.FromArgb(250, 250, 250));
@@ -22,6 +25,10 @@ namespace Extended_Life {
         // Для отрисовки используется движок Vortex2D
         SingleContextDevice device;
         Canvas2D canvas;
+
+        // Метод класса Object, который выполняет полное копирование полей объекта.
+        static readonly MethodInfo CloneMethod = typeof(Object).GetMethod("MemberwiseClone",
+            BindingFlags.NonPublic | BindingFlags.Instance);
 
         public MainForm() {
             InitializeComponent();
@@ -36,9 +43,7 @@ namespace Extended_Life {
 
         private List<Cell> GetNeighbours(Cell[,] cells, int x, int y) {
             List<Cell> neighbours = new List<Cell>();
-            // Далее следует ОЧЕНЬ плохой код. Он работает...
-            // Надо бы в стандарт языка C# добавить новую конструкцию - invisible_code { }.
-            // invisible_code {
+            // Далее следует ОЧЕНЬ плохой код. Не смотреть!
             if (x < FIELD_WIDTH - 1 && cells[x + 1, y].IsAlive) neighbours.Add(cells[x + 1, y]);
             if (y < FIELD_HEIGHT - 1 && cells[x, y + 1].IsAlive) neighbours.Add(cells[x, y + 1]);
             if (x > 0 && cells[x - 1, y].IsAlive) neighbours.Add(cells[x - 1, y]);
@@ -48,23 +53,23 @@ namespace Extended_Life {
             if (x < FIELD_WIDTH - 1 && y > 0 && cells[x + 1, y - 1].IsAlive) neighbours.Add(cells[x + 1, y - 1]);
             if (x > 0 && y < FIELD_HEIGHT - 1 && cells[x - 1, y + 1].IsAlive) neighbours.Add(cells[x - 1, y + 1]);
             return neighbours;
-            // }
         }
 
-        public static T DeepClone<T>(T obj) {
-            using (var ms = new MemoryStream()) {
-                var formatter = new BinaryFormatter();
-                formatter.Serialize(ms, obj);
-                ms.Position = 0;
-                return (T)formatter.Deserialize(ms);
-            }
+        // Возвращает полную копию (не ссылку) массива ячеек carray
+        private Cell[,] CopyCells(Cell[,] carray) {
+            Cell[,] res = new Cell[FIELD_WIDTH, FIELD_HEIGHT];
+            for (int i = 0; i < FIELD_WIDTH; ++i)
+                for (int c = 0; c < FIELD_HEIGHT; ++c)
+                    res[i, c] = (Cell)CloneMethod.Invoke(carray[i, c], null);
+            return res;
         }
 
+        // Один шаг игры
         private void Step() {
-            Cell[,] _cells = DeepClone<Cell[,]>(cells);
+            Cell[,] _cells = CopyCells(cells);
             for (int i = 0; i < FIELD_WIDTH; i++)
                 for (int c = 0; c < FIELD_HEIGHT; c++) {
-                    List<Cell> neighbours = GetNeighbours(_cells, i, c); // Кол-во соседей у клетки
+                    List<Cell> neighbours = GetNeighbours(_cells, i, c);
 
                     if (RegularLife) {
                         if (_cells[i, c].IsAlive == false && neighbours.Count == 3)
@@ -73,24 +78,20 @@ namespace Extended_Life {
                             cells[i, c].IsAlive = false;
                     }
                     else {
-                        /*if (neighbours.Count != cells[i, c].PreferedNeighboursNumber &&
-                            neighbours.Count != cells[i, c].PreferedNeighboursNumber + 1) {
-                            foreach (Cell cell in neighbours) {
-
-                            }
-                        }*/
+                        // ...
                     }
                 }
         }
 
+        // Обновление изображения
         private void UpdateScene() {
             if (device.BeginScene()) {
                 canvas.Clear(bgColor);
 
                 // Отрисовка сетки
                 for (float i = CELL_SIZE; i < PANEL_WIDTH; i += CELL_SIZE) {
-                    canvas.DrawLine(i, 0, i, PANEL_HEIGHT, ColorU.Black);
-                    if (i < PANEL_HEIGHT) canvas.DrawLine(0, i, PANEL_WIDTH, i, ColorU.Black);
+                    canvas.DrawLine(i, 0, i, PANEL_HEIGHT, ColorU.Gray);
+                    if (i < PANEL_HEIGHT) canvas.DrawLine(0, i, PANEL_WIDTH, i, ColorU.Gray);
                 }
 
                 DrawCells();
@@ -101,6 +102,7 @@ namespace Extended_Life {
             else device.TryReset();
         }
 
+        // Возвращает цвет ячейки в зависимости от её любимого кол-ва соседей
         private ColorU GetCellColor(Cell c) {
             switch (c.PreferedNeighboursNumber) {
                 case 0: return new ColorU(Color.DarkBlue);
@@ -169,6 +171,7 @@ namespace Extended_Life {
             toolTip.SetToolTip(trackBar1, "Update speed. Value - " + trackBar1.Value + " ms.");
         }
 
+        // Меняет режим игры
         private void ChangeGameMode(bool regularLife) {
             RegularLife = regularLife;
             tickTimer.Enabled = false;
