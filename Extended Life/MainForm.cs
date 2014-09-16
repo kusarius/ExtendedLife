@@ -11,7 +11,7 @@ namespace Extended_Life {
     public partial class MainForm : Form {
         // ТУДУ: Собрать движок Vortex2D под .NET 4.0
 
-        const int CELL_SIZE = 10; // Должен быть равен 5, 10, 15, 30 или 50
+        const int CELL_SIZE = 5; // Должен быть равен 5, 10, 15, 30 или 50
         const int PANEL_WIDTH = 700, PANEL_HEIGHT = 500; // Ширина и высота панели должна быть на 2 пикселя больше указанной здесь
         const int FIELD_WIDTH = PANEL_WIDTH / CELL_SIZE, FIELD_HEIGHT = PANEL_HEIGHT / CELL_SIZE;
 
@@ -193,11 +193,14 @@ namespace Extended_Life {
             if (RegularLife) {
                 int x = e.X / CELL_SIZE, y = e.Y / CELL_SIZE;
                 if (x >= 0 && y >= 0 && x < FIELD_WIDTH && y < FIELD_HEIGHT)
-                    if (e.Button == System.Windows.Forms.MouseButtons.Left)
+                    if (e.Button == System.Windows.Forms.MouseButtons.Left) {
                         cells[x, y].IsAlive = true;
-                    else if (e.Button == System.Windows.Forms.MouseButtons.Right)
+                        UpdateScene();
+                    }
+                    else if (e.Button == System.Windows.Forms.MouseButtons.Right) {
                         cells[x, y].IsAlive = false;
-                UpdateScene();
+                        UpdateScene();
+                    }
             }
         }
 
