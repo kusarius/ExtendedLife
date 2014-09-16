@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 
 namespace Extended_Life {
-    [Serializable]
     class Cell {
         public int PreferedNeighboursNumber { get; set; }
         public bool IsAlive { get; set; }

@@ -164,8 +164,6 @@ namespace Extended_Life {
             tickTimer.Enabled = false;
             button2.Enabled = true;
             button3.Enabled = false;
-            countOfSteps = 0;
-            stepCountLabel.Text = countOfSteps.ToString();
         }
 
         private void trackBar1_ValueChanged(object sender, EventArgs e) {
@@ -208,6 +206,8 @@ namespace Extended_Life {
         private void button4_Click(object sender, EventArgs e) {
             GenerateField(true);
             UpdateScene();
+            countOfSteps = 0;
+            stepCountLabel.Text = countOfSteps.ToString();
         }
     }
 }
