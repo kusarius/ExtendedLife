@@ -11,12 +11,13 @@ namespace Extended_Life {
     public partial class MainForm : Form {
         // ТУДУ: Собрать движок Vortex2D под .NET 4.0
 
-        const int PANEL_WIDTH = 600, PANEL_HEIGHT = 450;
-        const int CELL_SIZE = 5; // Должен быть равен 5, 10, 15, 30 или 50
+        const int CELL_SIZE = 10; // Должен быть равен 5, 10, 15, 30 или 50
+        const int PANEL_WIDTH = 800, PANEL_HEIGHT = 620; // Ширина и высота панели должна быть на 2 пикселя больше указанной здесь
         const int FIELD_WIDTH = PANEL_WIDTH / CELL_SIZE, FIELD_HEIGHT = PANEL_HEIGHT / CELL_SIZE;
 
         // Режим игры
         bool RegularLife = true;
+        int countOfSteps = 0;
 
         ColorU cell_color, bgColor = new ColorU(Color.FromArgb(250, 250, 250));
         Random rnd = new Random();
@@ -25,10 +26,6 @@ namespace Extended_Life {
         // Для отрисовки используется движок Vortex2D
         SingleContextDevice device;
         Canvas2D canvas;
-
-        // Метод класса Object, который выполняет полное копирование полей объекта.
-        static readonly MethodInfo CloneMethod = typeof(Object).GetMethod("MemberwiseClone",
-            BindingFlags.NonPublic | BindingFlags.Instance);
 
         public MainForm() {
             InitializeComponent();
@@ -55,12 +52,12 @@ namespace Extended_Life {
             return neighbours;
         }
 
-        // Возвращает полную копию (не ссылку) массива ячеек carray
+        // Возвращает полную копию массива ячеек carray
         private Cell[,] CopyCells(Cell[,] carray) {
             Cell[,] res = new Cell[FIELD_WIDTH, FIELD_HEIGHT];
             for (int i = 0; i < FIELD_WIDTH; ++i)
                 for (int c = 0; c < FIELD_HEIGHT; ++c)
-                    res[i, c] = (Cell)CloneMethod.Invoke(carray[i, c], null);
+                    res[i, c] = new Cell(carray[i,c].PreferedNeighboursNumber, carray[i,c].IsAlive);
             return res;
         }
 
@@ -81,6 +78,8 @@ namespace Extended_Life {
                         // ...
                     }
                 }
+            ++countOfSteps;
+            stepCountLabel.Text = countOfSteps.ToString();
         }
 
         // Обновление изображения
@@ -120,7 +119,7 @@ namespace Extended_Life {
         private void DrawCells() {
             for (int i = 0; i < FIELD_WIDTH; i++)
                 for (int c = 0; c < FIELD_HEIGHT; c++) {
-                    cell_color = RegularLife ? ColorU.LimeGreen : GetCellColor(cells[i, c]);
+                    cell_color = RegularLife ? ColorU.Blue : GetCellColor(cells[i, c]);
                     canvas.DrawFilledRect(i * CELL_SIZE + 1, c * CELL_SIZE + 1,
                         CELL_SIZE - 1, CELL_SIZE - 1,
                         cells[i, c].IsAlive ? cell_color : bgColor);
@@ -158,10 +157,13 @@ namespace Extended_Life {
             UpdateScene();
         }
 
-        private void button3_Click(object sender, EventArgs e) {
+        private void button3_Click(object sender, EventArgs e)
+        {
             tickTimer.Enabled = false;
             button2.Enabled = true;
             button3.Enabled = false;
+            countOfSteps = 0;
+            stepCountLabel.Text = countOfSteps.ToString();
         }
 
         private void trackBar1_ValueChanged(object sender, EventArgs e) {

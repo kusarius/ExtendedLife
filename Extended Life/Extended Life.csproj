@@ -43,7 +43,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Vortex">
-      <HintPath>..\..\..\..\Vortex2D Game Engine\Vortex2D(0.8 beta1)\vortex2d\Bin\Lib\Vortex.dll</HintPath>
+      <HintPath>C:\Users\Василий\Desktop\Vortex2D(0.8 beta1)\vortex2d\Bin\Lib\Vortex.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
