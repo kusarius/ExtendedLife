@@ -143,6 +143,8 @@ namespace Extended_Life {
         private void button1_Click(object sender, EventArgs e) {
             GenerateField(false);
             UpdateScene();
+            countOfSteps = 0;
+            stepCountLabel.Text = countOfSteps.ToString();
         }
 
         private void button2_Click(object sender, EventArgs e) {
