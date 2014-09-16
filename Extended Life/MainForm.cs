@@ -12,7 +12,7 @@ namespace Extended_Life {
         // ТУДУ: Собрать движок Vortex2D под .NET 4.0
 
         const int CELL_SIZE = 10; // Должен быть равен 5, 10, 15, 30 или 50
-        const int PANEL_WIDTH = 800, PANEL_HEIGHT = 620; // Ширина и высота панели должна быть на 2 пикселя больше указанной здесь
+        const int PANEL_WIDTH = 700, PANEL_HEIGHT = 500; // Ширина и высота панели должна быть на 2 пикселя больше указанной здесь
         const int FIELD_WIDTH = PANEL_WIDTH / CELL_SIZE, FIELD_HEIGHT = PANEL_HEIGHT / CELL_SIZE;
 
         // Режим игры
@@ -22,6 +22,7 @@ namespace Extended_Life {
         ColorU cell_color, bgColor = new ColorU(Color.FromArgb(250, 250, 250));
         Random rnd = new Random();
         Cell[,] cells = new Cell[FIELD_WIDTH, FIELD_HEIGHT];
+        Cell[,] cells_clone;
 
         // Для отрисовки используется движок Vortex2D
         SingleContextDevice device;
@@ -38,40 +39,37 @@ namespace Extended_Life {
             toolTip.SetToolTip(trackBar1, "Update speed. Value - " + trackBar1.Value + " ms.");
         }
 
-        private List<Cell> GetNeighbours(Cell[,] cells, int x, int y) {
-            List<Cell> neighbours = new List<Cell>();
-            // Далее следует ОЧЕНЬ плохой код. Не смотреть!
-            if (x < FIELD_WIDTH - 1 && cells[x + 1, y].IsAlive) neighbours.Add(cells[x + 1, y]);
-            if (y < FIELD_HEIGHT - 1 && cells[x, y + 1].IsAlive) neighbours.Add(cells[x, y + 1]);
-            if (x > 0 && cells[x - 1, y].IsAlive) neighbours.Add(cells[x - 1, y]);
-            if (y > 0 && cells[x, y - 1].IsAlive) neighbours.Add(cells[x, y - 1]);
-            if (x < FIELD_WIDTH - 1 && y < FIELD_HEIGHT - 1 && cells[x + 1, y + 1].IsAlive) neighbours.Add(cells[x + 1, y + 1]);
-            if (x > 0 && y > 0 && cells[x - 1, y - 1].IsAlive) neighbours.Add(cells[x - 1, y - 1]);
-            if (x < FIELD_WIDTH - 1 && y > 0 && cells[x + 1, y - 1].IsAlive) neighbours.Add(cells[x + 1, y - 1]);
-            if (x > 0 && y < FIELD_HEIGHT - 1 && cells[x - 1, y + 1].IsAlive) neighbours.Add(cells[x - 1, y + 1]);
-            return neighbours;
-        }
+        private Cell[] GetNeighbours(Cell[,] cells, int x, int y, ref int alive) {
+            Cell[] neighbours = new Cell[8];
 
-        // Возвращает полную копию массива ячеек carray
-        private Cell[,] CopyCells(Cell[,] carray) {
-            Cell[,] res = new Cell[FIELD_WIDTH, FIELD_HEIGHT];
-            for (int i = 0; i < FIELD_WIDTH; ++i)
-                for (int c = 0; c < FIELD_HEIGHT; ++c)
-                    res[i, c] = new Cell(carray[i,c].PreferedNeighboursNumber, carray[i,c].IsAlive);
-            return res;
+            if (x < FIELD_WIDTH - 1) neighbours[0] = cells[x + 1, y];
+            if (y < FIELD_HEIGHT - 1) neighbours[1] = cells[x, y + 1];
+            if (x > 0) neighbours[2] = cells[x - 1, y];
+            if (y > 0) neighbours[3] = cells[x, y - 1];
+            if (x < FIELD_WIDTH - 1 && y < FIELD_HEIGHT - 1) neighbours[4] = cells[x + 1, y + 1];
+            if (x > 0 && y > 0) neighbours[5] = cells[x - 1, y - 1];
+            if (x < FIELD_WIDTH - 1 && y > 0) neighbours[6] = cells[x + 1, y - 1];
+            if (x > 0 && y < FIELD_HEIGHT - 1) neighbours[7] = cells[x - 1, y + 1];
+
+            alive = 0;
+            for (int i = 0; i < 8; ++i)
+                alive += (neighbours[i].IsAlive ? 1 : 0);
+
+            return neighbours;
         }
 
         // Один шаг игры
         private void Step() {
-            Cell[,] _cells = CopyCells(cells);
+            cells_clone = (Cell[,])cells.Clone();
+            int nalive = 0; // Число активных соседей
             for (int i = 0; i < FIELD_WIDTH; i++)
                 for (int c = 0; c < FIELD_HEIGHT; c++) {
-                    List<Cell> neighbours = GetNeighbours(_cells, i, c);
+                    Cell[] neighbours = GetNeighbours(cells_clone, i, c, ref nalive);
 
                     if (RegularLife) {
-                        if (_cells[i, c].IsAlive == false && neighbours.Count == 3)
+                        if (cells_clone[i, c].IsAlive == false && nalive == 3)
                             cells[i, c].IsAlive = true;
-                        else if (_cells[i, c].IsAlive && neighbours.Count != 2 && neighbours.Count != 3)
+                        else if (cells_clone[i, c].IsAlive && nalive != 2 && nalive != 3)
                             cells[i, c].IsAlive = false;
                     }
                     else {
@@ -86,7 +84,7 @@ namespace Extended_Life {
         private void UpdateScene() {
             if (device.BeginScene()) {
                 canvas.Clear(bgColor);
-
+    
                 // Отрисовка сетки
                 for (float i = CELL_SIZE; i < PANEL_WIDTH; i += CELL_SIZE) {
                     canvas.DrawLine(i, 0, i, PANEL_HEIGHT, ColorU.Gray);
@@ -127,13 +125,12 @@ namespace Extended_Life {
         }
 
         private void GenerateField(bool init) {
-            for (int i = 0; i < FIELD_WIDTH; i++)
-                for (int c = 0; c < FIELD_HEIGHT; c++)
-                    if (init) cells[i, c] = new Cell();
-                    else {
-                        cells[i, c] = new Cell(rnd.Next(0, 8),
-                            rnd.Next(0, 4) == 0 ? true : false);
-                    }
+            if (init) cells = new Cell[FIELD_WIDTH, FIELD_HEIGHT];
+            else {
+                for (int i = 0; i < FIELD_WIDTH; i++)
+                    for (int c = 0; c < FIELD_HEIGHT; c++)
+                        cells[i, c] = new Cell(rnd.Next(0, 8), rnd.Next(0, 4) == 0 ? true : false);
+            }        
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e) {
@@ -159,8 +156,7 @@ namespace Extended_Life {
             UpdateScene();
         }
 
-        private void button3_Click(object sender, EventArgs e)
-        {
+        private void button3_Click(object sender, EventArgs e) {
             tickTimer.Enabled = false;
             button2.Enabled = true;
             button3.Enabled = false;
@@ -179,6 +175,8 @@ namespace Extended_Life {
             tickTimer.Enabled = false;
             button2.Enabled = true;
             button3.Enabled = false;
+            countOfSteps = 0;
+            stepCountLabel.Text = countOfSteps.ToString();
             GenerateField(true);
             UpdateScene();
         }
