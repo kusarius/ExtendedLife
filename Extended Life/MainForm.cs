@@ -11,7 +11,7 @@ namespace Extended_Life {
     public partial class MainForm : Form {
         // ТУДУ: Собрать движок Vortex2D под .NET 4.0
 
-        const int CELL_SIZE = 5; // Должен быть равен 5, 10, 15, 30 или 50
+        const int CELL_SIZE = 10; // Должен быть равен 5, 10, 15, 30 или 50
         const int PANEL_WIDTH = 700, PANEL_HEIGHT = 500; // Ширина и высота панели должна быть на 2 пикселя больше указанной здесь
         const int FIELD_WIDTH = PANEL_WIDTH / CELL_SIZE, FIELD_HEIGHT = PANEL_HEIGHT / CELL_SIZE;
 
@@ -61,6 +61,7 @@ namespace Extended_Life {
         // Один шаг игры
         private void Step() {
             cells_clone = (Cell[,])cells.Clone();
+            Point[] search_p;
             int nalive = 0; // Число активных соседей
             for (int i = 0; i < FIELD_WIDTH; i++)
                 for (int c = 0; c < FIELD_HEIGHT; c++) {
@@ -73,7 +74,46 @@ namespace Extended_Life {
                             cells[i, c].IsAlive = false;
                     }
                     else {
-                        // ...
+                        /*
+                         * 
+                         * 
+                         * */
+
+                        // Если клетка имеет некомфортное число соседей
+                        if (cells_clone[i,c].IsAlive && nalive != cells_clone[i, c].PreferedNeighboursNumber &&
+                            nalive != cells_clone[i, c].PreferedNeighboursNumber + 1)
+                        {
+                            int calive = 0;
+                            bool found = false; // Найдена ли подходщая клетка
+                            search_p = new Point[] { new Point(i + 1, c),
+                                new Point(i - 1, c), new Point(i, c + 1),
+                                new Point(i, c - 1), new Point(i + 1, c + 1),
+                                new Point(i - 1, c - 1), new Point(i + 1, c - 1),
+                                new Point(i - 1, c + 1)};
+
+                            // Просматриваем всех соседей
+                            for (int ch = 0; ch < 8; ++ch)
+                                try
+                                {
+                                    if (cells_clone[search_p[ch].X, search_p[ch].Y].IsAlive == false)
+                                    {
+                                        Cell[] neigh = GetNeighbours(cells_clone, search_p[ch].X, search_p[ch].Y, ref calive);
+                                        calive -= 1; // Из соседей убираем текущую клетку
+                                        if (calive == cells_clone[i, c].PreferedNeighboursNumber ||
+                                            calive == cells_clone[i, c].PreferedNeighboursNumber + 1)
+                                        {
+                                            cells[i, c].IsAlive = false;
+                                            cells[search_p[ch].X, search_p[ch].Y] = cells[i, c];
+                                            cells[search_p[ch].X, search_p[ch].Y].IsAlive = true;
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                catch { /* Выход за пределы массива. */ }
+
+                            if (found == false) cells[i, c].IsAlive = false;
+                        }
                     }
                 }
             ++countOfSteps;
