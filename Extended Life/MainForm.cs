@@ -68,40 +68,34 @@ namespace Extended_Life {
                     Cell[] neighbours = GetNeighbours(cells_clone, i, c, ref nalive);
 
                     if (RegularLife) {
+
                         if (cells_clone[i, c].IsAlive == false && nalive == 3)
                             cells[i, c].IsAlive = true;
                         else if (cells_clone[i, c].IsAlive && nalive != 2 && nalive != 3)
                             cells[i, c].IsAlive = false;
                     }
                     else {
-                        /*
-                         * 
-                         * 
-                         * */
-
-                        // Если клетка имеет некомфортное число соседей
-                        if (cells_clone[i,c].IsAlive && nalive != cells_clone[i, c].PreferedNeighboursNumber &&
-                            nalive != cells_clone[i, c].PreferedNeighboursNumber + 1)
-                        {
-                            int calive = 0;
-                            bool found = false; // Найдена ли подходщая клетка
-                            search_p = new Point[] { new Point(i + 1, c),
+                        search_p = new Point[] { new Point(i + 1, c),
                                 new Point(i - 1, c), new Point(i, c + 1),
                                 new Point(i, c - 1), new Point(i + 1, c + 1),
                                 new Point(i - 1, c - 1), new Point(i + 1, c - 1),
                                 new Point(i - 1, c + 1)};
 
+                        // Если клетка имеет некомфортное число соседей
+                        if (cells_clone[i, c].IsAlive && nalive != cells_clone[i, c].PreferedNeighboursNumber &&
+                                    nalive != cells_clone[i, c].PreferedNeighboursNumber + 1) {
+                            int calive = 0;
+                            bool found = false; // Найдена ли подходщая клетка
+
                             // Просматриваем всех соседей
                             for (int ch = 0; ch < 8; ++ch)
-                                try
-                                {
-                                    if (cells_clone[search_p[ch].X, search_p[ch].Y].IsAlive == false)
-                                    {
+                                try {
+                                    // Если любая соседняя клетка имеет допустимое число соседей, перемещаемся в неё
+                                    if (cells_clone[search_p[ch].X, search_p[ch].Y].IsAlive == false) {
                                         Cell[] neigh = GetNeighbours(cells_clone, search_p[ch].X, search_p[ch].Y, ref calive);
                                         calive -= 1; // Из соседей убираем текущую клетку
                                         if (calive == cells_clone[i, c].PreferedNeighboursNumber ||
-                                            calive == cells_clone[i, c].PreferedNeighboursNumber + 1)
-                                        {
+                                            calive == cells_clone[i, c].PreferedNeighboursNumber + 1) {
                                             cells[i, c].IsAlive = false;
                                             cells[search_p[ch].X, search_p[ch].Y] = cells[i, c];
                                             cells[search_p[ch].X, search_p[ch].Y].IsAlive = true;
@@ -113,6 +107,25 @@ namespace Extended_Life {
                                 catch { /* Выход за пределы массива. */ }
 
                             if (found == false) cells[i, c].IsAlive = false;
+                        }
+                        else if (cells_clone[i, c].IsAlive == false) {
+                            if (nalive > 1) {
+                                // Выбираем два несовпадающих соседа
+                                int parent1_num = 0, parent2_num = 0;
+                                while (neighbours[parent1_num].IsAlive == false) parent1_num = rnd.Next(0, 8);
+                                while (neighbours[parent2_num].IsAlive == false || parent1_num == parent2_num) 
+                                    parent2_num = rnd.Next(0, 8);
+
+                                // Шанс мутации 2%
+                                bool mutation = rnd.Next(0, 101) <= 5;
+
+                                // Магия (двойное условное выражение)
+                                Cell child = new Cell(mutation ? rnd.Next(0, 8) :
+                                    ((rnd.Next(0, 2) == 0) ? neighbours[parent1_num].PreferedNeighboursNumber :
+                                    neighbours[parent2_num].PreferedNeighboursNumber), 
+                                    true);
+                                cells[i, c] = child;
+                            }
                         }
                     }
                 }
@@ -165,12 +178,10 @@ namespace Extended_Life {
         }
 
         private void GenerateField(bool init) {
-            if (init) cells = new Cell[FIELD_WIDTH, FIELD_HEIGHT];
-            else {
-                for (int i = 0; i < FIELD_WIDTH; i++)
-                    for (int c = 0; c < FIELD_HEIGHT; c++)
-                        cells[i, c] = new Cell(rnd.Next(0, 8), rnd.Next(0, 4) == 0 ? true : false);
-            }        
+            for (int i = 0; i < FIELD_WIDTH; i++)
+                for (int c = 0; c < FIELD_HEIGHT; c++)
+                    cells[i, c] = new Cell(rnd.Next(0, 8), 
+                        init ? false : (rnd.Next(0, 4) == 0 ? true : false));
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e) {
@@ -230,18 +241,16 @@ namespace Extended_Life {
         }
 
         private void panel1_MouseMove(object sender, MouseEventArgs e) {
-            if (RegularLife) {
-                int x = e.X / CELL_SIZE, y = e.Y / CELL_SIZE;
-                if (x >= 0 && y >= 0 && x < FIELD_WIDTH && y < FIELD_HEIGHT)
-                    if (e.Button == System.Windows.Forms.MouseButtons.Left) {
-                        cells[x, y].IsAlive = true;
-                        UpdateScene();
-                    }
-                    else if (e.Button == System.Windows.Forms.MouseButtons.Right) {
-                        cells[x, y].IsAlive = false;
-                        UpdateScene();
-                    }
-            }
+            int x = e.X / CELL_SIZE, y = e.Y / CELL_SIZE;
+            if (x >= 0 && y >= 0 && x < FIELD_WIDTH && y < FIELD_HEIGHT)
+                if (e.Button == System.Windows.Forms.MouseButtons.Left) {
+                    cells[x, y].IsAlive = true;
+                    UpdateScene();
+                }
+                else if (e.Button == System.Windows.Forms.MouseButtons.Right) {
+                    cells[x, y].IsAlive = false;
+                    UpdateScene();
+                }
         }
 
         private void button4_Click(object sender, EventArgs e) {
