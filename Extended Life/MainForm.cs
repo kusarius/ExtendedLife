@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
-using System.Reflection;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Forms;
 using Vortex.Drawing;
 
@@ -11,7 +7,7 @@ namespace Extended_Life {
     public partial class MainForm : Form {
         // ТУДУ: Собрать движок Vortex2D под .NET 4.0
 
-        const int CELL_SIZE = 10; // Должен быть равен 5, 10, 15, 30 или 50
+        const int CELL_SIZE = 5; // Должен быть равен 5, 10, 15, 30 или 50
         const int PANEL_WIDTH = 700, PANEL_HEIGHT = 500; // Ширина и высота панели должна быть на 2 пикселя больше указанной здесь
         const int FIELD_WIDTH = PANEL_WIDTH / CELL_SIZE, FIELD_HEIGHT = PANEL_HEIGHT / CELL_SIZE;
 
