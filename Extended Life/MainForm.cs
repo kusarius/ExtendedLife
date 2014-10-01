@@ -49,7 +49,7 @@ namespace Extended_Life {
 
             alive = 0;
             for (int i = 0; i < 8; ++i)
-                alive += (neighbours[i].IsAlive ? 1 : 0);
+                if (neighbours[i].IsAlive) alive++;
 
             return neighbours;
         }
@@ -59,27 +59,28 @@ namespace Extended_Life {
             cells_clone = (Cell[,])cells.Clone();
             Point[] search_p;
             int nalive = 0; // Число активных соседей
+
             for (int i = 0; i < FIELD_WIDTH; i++)
                 for (int c = 0; c < FIELD_HEIGHT; c++) {
                     Cell[] neighbours = GetNeighbours(cells_clone, i, c, ref nalive);
 
                     if (RegularLife) {
-
                         if (cells_clone[i, c].IsAlive == false && nalive == 3)
                             cells[i, c].IsAlive = true;
                         else if (cells_clone[i, c].IsAlive && nalive != 2 && nalive != 3)
                             cells[i, c].IsAlive = false;
                     }
                     else {
-                        search_p = new Point[] { new Point(i + 1, c),
+                        // Если клетка имеет некомфортное число соседей
+                        if (cells_clone[i, c].IsAlive && nalive != cells_clone[i, c].PreferedNeighboursNumber &&
+                                    nalive != cells_clone[i, c].PreferedNeighboursNumber + 1) {
+                            // Координаты окружающих клеток
+                            search_p = new Point[] { new Point(i + 1, c),
                                 new Point(i - 1, c), new Point(i, c + 1),
                                 new Point(i, c - 1), new Point(i + 1, c + 1),
                                 new Point(i - 1, c - 1), new Point(i + 1, c - 1),
                                 new Point(i - 1, c + 1)};
 
-                        // Если клетка имеет некомфортное число соседей
-                        if (cells_clone[i, c].IsAlive && nalive != cells_clone[i, c].PreferedNeighboursNumber &&
-                                    nalive != cells_clone[i, c].PreferedNeighboursNumber + 1) {
                             int calive = 0;
                             bool found = false; // Найдена ли подходщая клетка
 
@@ -105,20 +106,22 @@ namespace Extended_Life {
                             if (found == false) cells[i, c].IsAlive = false;
                         }
                         else if (cells_clone[i, c].IsAlive == false) {
-                            if (nalive > 1) {
+                            // Шанс того, что клетка оживёт - 50%
+                            if (nalive > 1 && rnd.Next(0, 101) <= 50) {
                                 // Выбираем два несовпадающих соседа
                                 int parent1_num = 0, parent2_num = 0;
                                 while (neighbours[parent1_num].IsAlive == false) parent1_num = rnd.Next(0, 8);
-                                while (neighbours[parent2_num].IsAlive == false || parent1_num == parent2_num) 
+                                while (neighbours[parent2_num].IsAlive == false || parent1_num == parent2_num)
                                     parent2_num = rnd.Next(0, 8);
 
-                                // Шанс мутации 2%
+                                // Шанс мутации 5%
                                 bool mutation = rnd.Next(0, 101) <= 5;
 
                                 // Магия (двойное условное выражение)
-                                Cell child = new Cell(mutation ? rnd.Next(0, 8) :
-                                    ((rnd.Next(0, 2) == 0) ? neighbours[parent1_num].PreferedNeighboursNumber :
-                                    neighbours[parent2_num].PreferedNeighboursNumber), 
+                                Cell child = new Cell(
+                                    mutation ? rnd.Next(0, 8) :
+                                        (rnd.Next(0, 2) == 0) ? neighbours[parent1_num].PreferedNeighboursNumber :
+                                        neighbours[parent2_num].PreferedNeighboursNumber,
                                     true);
                                 cells[i, c] = child;
                             }
@@ -176,8 +179,11 @@ namespace Extended_Life {
         private void GenerateField(bool init) {
             for (int i = 0; i < FIELD_WIDTH; i++)
                 for (int c = 0; c < FIELD_HEIGHT; c++)
-                    cells[i, c] = new Cell(rnd.Next(0, 8), 
-                        init ? false : (rnd.Next(0, 4) == 0 ? true : false));
+                    cells[i, c] = new Cell(
+                        rnd.Next(0, 8), 
+                        init ? false :
+                            rnd.Next(0, 4) == 0 ? true : false
+                    );
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e) {
