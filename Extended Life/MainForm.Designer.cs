@@ -51,14 +51,14 @@
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Location = new System.Drawing.Point(6, 6);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(702, 502);
+            this.panel1.Size = new System.Drawing.Size(802, 602);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             this.panel1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseMove);
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(714, 6);
+            this.button1.Location = new System.Drawing.Point(813, 6);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(138, 23);
             this.button1.TabIndex = 1;
@@ -72,7 +72,7 @@
             this.button2.Cursor = System.Windows.Forms.Cursors.Default;
             this.button2.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control;
             this.button2.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.button2.Location = new System.Drawing.Point(714, 73);
+            this.button2.Location = new System.Drawing.Point(813, 73);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(68, 23);
             this.button2.TabIndex = 2;
@@ -87,7 +87,7 @@
             // button3
             // 
             this.button3.Enabled = false;
-            this.button3.Location = new System.Drawing.Point(784, 73);
+            this.button3.Location = new System.Drawing.Point(883, 73);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(68, 23);
             this.button3.TabIndex = 3;
@@ -98,7 +98,7 @@
             // trackBar1
             // 
             this.trackBar1.AutoSize = false;
-            this.trackBar1.Location = new System.Drawing.Point(714, 102);
+            this.trackBar1.Location = new System.Drawing.Point(813, 102);
             this.trackBar1.Maximum = 1000;
             this.trackBar1.Minimum = 1;
             this.trackBar1.Name = "trackBar1";
@@ -115,7 +115,7 @@
             // 
             this.radioButton1.AutoSize = true;
             this.radioButton1.Checked = true;
-            this.radioButton1.Location = new System.Drawing.Point(719, 135);
+            this.radioButton1.Location = new System.Drawing.Point(818, 135);
             this.radioButton1.Name = "radioButton1";
             this.radioButton1.Size = new System.Drawing.Size(133, 17);
             this.radioButton1.TabIndex = 5;
@@ -127,7 +127,7 @@
             // radioButton2
             // 
             this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(719, 160);
+            this.radioButton2.Location = new System.Drawing.Point(818, 160);
             this.radioButton2.Name = "radioButton2";
             this.radioButton2.Size = new System.Drawing.Size(133, 17);
             this.radioButton2.TabIndex = 6;
@@ -137,7 +137,7 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(714, 32);
+            this.button4.Location = new System.Drawing.Point(813, 32);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(138, 23);
             this.button4.TabIndex = 7;
@@ -148,7 +148,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(714, 492);
+            this.label1.Location = new System.Drawing.Point(815, 592);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(79, 13);
             this.label1.TabIndex = 8;
@@ -157,7 +157,7 @@
             // stepCountLabel
             // 
             this.stepCountLabel.AutoSize = true;
-            this.stepCountLabel.Location = new System.Drawing.Point(788, 492);
+            this.stepCountLabel.Location = new System.Drawing.Point(889, 592);
             this.stepCountLabel.Name = "stepCountLabel";
             this.stepCountLabel.Size = new System.Drawing.Size(13, 13);
             this.stepCountLabel.TabIndex = 9;
@@ -167,7 +167,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Enabled = false;
-            this.label2.Location = new System.Drawing.Point(723, 188);
+            this.label2.Location = new System.Drawing.Point(821, 188);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(122, 13);
             this.label2.TabIndex = 10;
@@ -178,7 +178,7 @@
             // 
             this.bornTrackBar.AutoSize = false;
             this.bornTrackBar.Enabled = false;
-            this.bornTrackBar.Location = new System.Drawing.Point(719, 206);
+            this.bornTrackBar.Location = new System.Drawing.Point(817, 206);
             this.bornTrackBar.Maximum = 100;
             this.bornTrackBar.Name = "bornTrackBar";
             this.bornTrackBar.Size = new System.Drawing.Size(133, 34);
@@ -191,7 +191,7 @@
             // 
             this.deathTrackBar.AutoSize = false;
             this.deathTrackBar.Enabled = false;
-            this.deathTrackBar.Location = new System.Drawing.Point(719, 261);
+            this.deathTrackBar.Location = new System.Drawing.Point(817, 261);
             this.deathTrackBar.Maximum = 100;
             this.deathTrackBar.Name = "deathTrackBar";
             this.deathTrackBar.Size = new System.Drawing.Size(133, 34);
@@ -204,7 +204,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Enabled = false;
-            this.label3.Location = new System.Drawing.Point(728, 243);
+            this.label3.Location = new System.Drawing.Point(826, 243);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(113, 13);
             this.label3.TabIndex = 12;
@@ -215,7 +215,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(858, 514);
+            this.ClientSize = new System.Drawing.Size(956, 614);
             this.Controls.Add(this.deathTrackBar);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.bornTrackBar);

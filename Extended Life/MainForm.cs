@@ -2,13 +2,12 @@
 using System.Drawing;
 using System.Windows.Forms;
 using Vortex.Drawing;
+using Vortex;
 
 namespace Extended_Life {
     public partial class MainForm : Form {
-        // ТУДУ: Собрать движок Vortex2D под .NET 4.0
-
         const int CELL_SIZE = 5; // Должен быть равен 5, 10, 15, 30 или 50
-        const int PANEL_WIDTH = 700, PANEL_HEIGHT = 500; // Ширина и высота панели должна быть на 2 пикселя больше указанной здесь
+        const int PANEL_WIDTH = 800, PANEL_HEIGHT = 600; // Ширина и высота панели должна быть на 2 пикселя больше указанной здесь
         const int FIELD_WIDTH = PANEL_WIDTH / CELL_SIZE, FIELD_HEIGHT = PANEL_HEIGHT / CELL_SIZE;
 
         // Режим игры
