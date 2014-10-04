@@ -36,7 +36,13 @@
             this.button4 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.stepCountLabel = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.bornTrackBar = new System.Windows.Forms.TrackBar();
+            this.deathTrackBar = new System.Windows.Forms.TrackBar();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.bornTrackBar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.deathTrackBar)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -157,11 +163,63 @@
             this.stepCountLabel.TabIndex = 9;
             this.stepCountLabel.Text = "0";
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Enabled = false;
+            this.label2.Location = new System.Drawing.Point(723, 188);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(122, 13);
+            this.label2.TabIndex = 10;
+            this.label2.Text = "Процент рождаемости";
+            this.label2.Visible = false;
+            // 
+            // bornTrackBar
+            // 
+            this.bornTrackBar.AutoSize = false;
+            this.bornTrackBar.Enabled = false;
+            this.bornTrackBar.Location = new System.Drawing.Point(719, 206);
+            this.bornTrackBar.Maximum = 100;
+            this.bornTrackBar.Name = "bornTrackBar";
+            this.bornTrackBar.Size = new System.Drawing.Size(133, 34);
+            this.bornTrackBar.TabIndex = 11;
+            this.bornTrackBar.TickFrequency = 10;
+            this.bornTrackBar.Value = 50;
+            this.bornTrackBar.Visible = false;
+            // 
+            // deathTrackBar
+            // 
+            this.deathTrackBar.AutoSize = false;
+            this.deathTrackBar.Enabled = false;
+            this.deathTrackBar.Location = new System.Drawing.Point(719, 261);
+            this.deathTrackBar.Maximum = 100;
+            this.deathTrackBar.Name = "deathTrackBar";
+            this.deathTrackBar.Size = new System.Drawing.Size(133, 34);
+            this.deathTrackBar.TabIndex = 13;
+            this.deathTrackBar.TickFrequency = 10;
+            this.deathTrackBar.Value = 50;
+            this.deathTrackBar.Visible = false;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Enabled = false;
+            this.label3.Location = new System.Drawing.Point(728, 243);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(113, 13);
+            this.label3.TabIndex = 12;
+            this.label3.Text = "Процент смертности";
+            this.label3.Visible = false;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(858, 514);
+            this.Controls.Add(this.deathTrackBar);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.bornTrackBar);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.stepCountLabel);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button4);
@@ -178,6 +236,8 @@
             this.ShowIcon = false;
             this.Text = "Extended Life";
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.bornTrackBar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.deathTrackBar)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -197,6 +257,10 @@
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label stepCountLabel;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TrackBar bornTrackBar;
+        private System.Windows.Forms.TrackBar deathTrackBar;
+        private System.Windows.Forms.Label label3;
     }
 }
 

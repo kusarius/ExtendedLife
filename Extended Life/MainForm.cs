@@ -103,18 +103,22 @@ namespace Extended_Life {
                                 }
                                 catch { /* Выход за пределы массива. */ }
 
-                            if (found == false) cells[i, c].IsAlive = false;
+                            // Процент смертности
+                            int death_percent = (int)deathTrackBar.Value;
+                            if (found == false && rnd.Next(0, 101) < death_percent) cells[i, c].IsAlive = false;
                         }
                         else if (cells_clone[i, c].IsAlive == false) {
-                            // Шанс того, что клетка оживёт - 50%
-                            if (nalive > 1 && rnd.Next(0, 101) <= 50) {
+                            // Процент рождаемости
+                            int born_percent = (int)bornTrackBar.Value;
+
+                            if (nalive > 1 && rnd.Next(0, 101) < born_percent) {
                                 // Выбираем два несовпадающих соседа
                                 int parent1_num = 0, parent2_num = 0;
                                 while (neighbours[parent1_num].IsAlive == false) parent1_num = rnd.Next(0, 8);
                                 while (neighbours[parent2_num].IsAlive == false || parent1_num == parent2_num)
                                     parent2_num = rnd.Next(0, 8);
 
-                                // Шанс мутации 5%
+                                // Шанс мутации
                                 bool mutation = rnd.Next(0, 101) <= 5;
 
                                 // Магия (двойное условное выражение)
@@ -228,6 +232,8 @@ namespace Extended_Life {
             tickTimer.Enabled = false;
             button2.Enabled = true;
             button3.Enabled = false;
+            label2.Visible = label2.Enabled = label3.Visible = label3.Enabled = !regularLife;
+            bornTrackBar.Visible = bornTrackBar.Enabled = deathTrackBar.Visible = deathTrackBar.Enabled = !regularLife;
             countOfSteps = 0;
             stepCountLabel.Text = countOfSteps.ToString();
             GenerateField(true);
